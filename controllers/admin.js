@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const { populate } = require('../models/user');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -18,6 +19,7 @@ exports.postAddProduct = (req, res, next) => {
     price:  price,
     imageUrl: imageUrl,
     description: description,
+    userId : req.user
   });
     
   product
@@ -77,7 +79,10 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    .select('title price -_id')
+    .populate('userId', 'name')
     .then(products => {
+      console.log(products);
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',

@@ -23,6 +23,7 @@ const userSchema = new Schema({
 });
 
 userSchema.methods.addToCart = function(product) {
+    // Check whether current product exits in cart or not
         const cartProductIndex = this.cart.items.findIndex(cp => {
         return cp.productId.toString() === product._id.toString();
       })
@@ -52,6 +53,18 @@ userSchema.methods.removeItemFromCart = function(prodId){
         })
     this.cart.items = updatedCartItems;
     return this.save();    
+}
+
+userSchema.methods.addOrder = function(){
+    const products = this.cart.items;
+    const order = {
+        items : products,
+        user: {
+        _id: this._id,
+        name : this.name
+        }
+    };
+
 }
 
 module.exports = mongoose.model('User', userSchema);
